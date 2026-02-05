@@ -1,0 +1,40 @@
+# Python
+*.pyc
+__pycache__/
+*~
+*.log
+*.pot
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+studybudy_env/
+
+#Node modules
+node_modules/
+
+# Databases
+db.sqlite3
+*.sqlite3
+
+# Media and Static files
+media/
+static/
+
+# IDE-specific files (optional, can also be set globally)
+.idea/
+.vscode/
+.DS_Store # macOS system files
+Thumbs.db # Windows system files
+
+# Sensitive or local settings (do not commit secrets)
+local_settings.py 
+
+# Testing and coverage reports
+.tox/
+.coverage
+htmlcov/
+.pytest_cache/
