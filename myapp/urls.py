@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import index,detail,create_item,update_item,delete_item
+from .views import index,create_item,update_item,delete_item,IndexClassView,FoodDetailView,ItemCreateView,ItemUpdateView,ItemDeleteView
 
 #namespacing
 app_name='myapp'
 urlpatterns = [
-    path('',view=index,name='index'),
-    path('item/<str:id>',view=detail,name='detail'),
-     path('add/',view=create_item,name='item_form'),
-     path('update/<str:id>',view=update_item, name='update-item'),
-     path('delete/<int:id>',view = delete_item, name='delete_item')
+    path('',view=IndexClassView.as_view(),name='index'),
+    path('item/<int:pk>',view=FoodDetailView.as_view(),name='detail'),
+     path('add/',view=ItemCreateView.as_view(),name='item_form'),
+     path('update/<int:pk>',view=ItemUpdateView.as_view(), name='update-item'),
+     path('delete/<int:pk>',view = ItemDeleteView.as_view(), name='delete_item'),
 ]

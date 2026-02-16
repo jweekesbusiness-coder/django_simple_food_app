@@ -9,12 +9,19 @@
     <div class="text-green-700 font-bold text-2xl">${{item.item_price}}</div>
     <div>{{item.item_des}}</div>
     <div>
-      <a href="{%url 'myapp:update-item' id=item.id%}" class="bg-yellow-500 px-4 py-2 rounded-md font-bold text-white"
+      {%if request.user == item.user%}
+      <a
+        href="{%url 'myapp:update-item' pk=item.id%}"
+        class="bg-yellow-500 px-4 py-2 rounded-md font-bold text-white"
         >Edit</a
       >
-      <a href="{%url 'myapp:delete_item' id=item.id%}" class="bg-red-500 px-4 py-2 rounded-md font-bold text-white"
+
+      <a
+        href="{%url 'myapp:delete_item' pk=item.id%}"
+        class="bg-red-500 px-4 py-2 rounded-md font-bold text-white"
         >Delete</a
       >
+      {%endif%}
     </div>
   </div>
 </div>
