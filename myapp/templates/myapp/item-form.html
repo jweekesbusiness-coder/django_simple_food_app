@@ -3,6 +3,7 @@
 
 <div class="flex flex-col justify-center items-center min-h-screen p-10">
     <h1>Create Item</h1>
+    {{form.errors}}
     <form method="POST" class="shadow-lg space-y-6 p-10 w-96">
         {% csrf_token %}
           {%if form.non_field_errors%}
@@ -23,6 +24,3 @@
 </div>
 
 {% endblock %}
-
-
- 

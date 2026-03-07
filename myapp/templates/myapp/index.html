@@ -1,20 +1,40 @@
-{%extends 'myapp/base.html'%} {%block body%}
-
+{%extends 'myapp/base.html'%} 
+{%load custom_filters%}
+{%block body%}
+<!--Fragment Caching-->
+{%load cache%}
 <div>
-  {%for item in items%}
+  {% comment %} {%cache 900 page_obj%} <!--Caching the page_obj for 15 minutes--> {% endcomment %}
+  {%for item in page_obj%}
   <div class="m-10 flex  w-1/2 mx-auto">
     <div>
       <img class="w-64 rounded-lg" src="{{item.item_image}}" alt="" />
     </div>
     <div class="mx-16">
-      <div class="font-bold">{{item.item_name}}</div>
-      <div>{{item.item_des}}</div>
+      <div class="font-bold">{{item.item_name | upper}}</div>
+      <div>{{item.item_des | lower | truncatechars:20}}</div>
       <div>{{item.user}}</div>
-      <div class="text-green-700 font-bold">${{item.item_price}}</div>
+      <div>{{item.created_at | timesince }} ago</div> <!--Using  a template filter to display date time field in item  differently -->
+      <div class="text-green-700 font-bold">{{item.item_price  |floatformat:2 |currency}}</div> <!--Using custom template filter to format the price as currency and also using built in floatformat filter to format the price to 2 decimal places -->
+      <div>Discounted price: {{item.item_price |discount:50 |floatformat:2 | currency}}</div>
     </div>
     <div><a class="bg-red-500 font-bold text-white py-2 px-4 rounded-md" href="{%url 'myapp:detail' pk=item.id %}">View Details</a> </div>
   </div>
   {%endfor%}
+  {% comment %} {% endcache %} {% endcomment %}
+</div>
+
+<div class="flex items-center justify-center space-x-4 py-4">
+  <!--This shows the current page number and the total number of pages that we got
+   back from our paginator object -->
+   {%if page_obj.has_previous%}
+   <a href="?page={{page_obj.previous_page_number}}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transistion">Previous</a>
+   {%endif%}
+   
+  <span>page {{page_obj.number}} of {{page_obj.paginator.num_pages}}</span>
+  {%if page_obj.has_next%}
+   <a href="?page={{page_obj.next_page_number}}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transistion">Next</a>
+  {%endif%}
 </div>
 
 {% endblock %}

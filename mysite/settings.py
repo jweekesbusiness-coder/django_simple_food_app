@@ -143,3 +143,34 @@ LOGIN_URL = 'users:login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'pictures')
 MEDIA_URL = '/pictures/'
+
+#Needed for caching
+CACHES = {
+    "default":{
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache",
+    }
+}
+
+#Needed for logging
+
+
+LOG_LEVEL = "DEBUG" if os.getenv("DJANGO_DEBUG", "True") == "True" else "WARNING"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "debug.log",# file that will hold all of our logs
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "DEBUG",
+    },
+}
