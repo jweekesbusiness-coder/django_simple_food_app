@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp.apps.MyappConfig',
     'users.apps.UsersConfig',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -174,3 +178,64 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
+
+#For our api's authentication
+REST_FRAMEWORK = {
+    #Throttling is a technique used to limit the number of requests that a client can make to an API within a certain time period. This can help prevent abuse and ensure that the API remains responsive for all users. In Django REST Framework, you can use throttling classes to implement this functionality.
+    "DEFAULT_THROTTLE_CLASSES":[
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    #The "DEFAULT_THROTTLE_RATES" setting is used to specify the rate limits for different types of users in Django REST Framework. The "anon" key specifies the rate limit for anonymous users (users who are not authenticated), while the "user" key specifies the rate limit for authenticated users. In this example, anonymous users are limited to 10 requests per minute, while authenticated users are limited to 1000 requests per day. You can adjust these values as needed to suit your application's requirements.
+    "DEFAULT_THROTTLE_RATES":{
+        "anon": "10/minute",
+        "user":"1000/day",
+
+    },
+    #Pagination is a technique used to divide large sets of data into smaller, 
+    # more manageable chunks, or "pages". This can improve the performance of an 
+    # API by reducing the amount of data that needs to be sent in a single response, 
+    # and it can also make it easier for clients to navigate through large datasets.
+    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    # "PAGE_SIZE": 5,
+
+    #LimitOffsetPagination is a pagination style that allows clients to specify the number of items to return (limit) and the starting point (offset) 
+    # for the items to be returned. This is useful for APIs that need to support pagination of large datasets, 
+    # as it allows clients to retrieve specific subsets of data without having to load the entire dataset into memory.
+    #A request example for this pagination style would be: GET /api/items/?limit=5&offset=10, which would return 5 items starting from the 11th item in the dataset.
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 5,
+
+    #This setting specifies the default filter backends that will be used for filtering querysets in the API views.
+    "DEFAULT_FILTER_BACKENDS":[
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+
+    "DEFAULT_AUTHENTICATION_CLASSES":[
+        #Note that session authentication is not suitable for production environments, especially for APIs that are accessed by third-party clients. 
+        # In production, you would typically use token-based authentication (like JWT) or OAuth2 for better security and scalability.
+        "rest_framework.authentication.SessionAuthentication", #Type of authentiation that loads a session for different users
+        'rest_framework.authentication.TokenAuthentication', #Used for token based authentication where each user is given a unique token that they can use to access the api
+        "rest_framework_simplejwt.authentication.JWTAuthentication", #Used for JWT authentication where users are given a JSON Web Token that they can use to access the api
+        #Jwt tokens come in two types: access tokens and refresh tokens. Access tokens are short-lived and are used to access the API, while refresh tokens are long-lived and can be used to obtain new access tokens when the old ones expire.
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+#rest_framework token - 5b5ba87c9c10a01f258fd0a81927a19990ae818b generated using 
+# >>> from rest_framework.authtoken.models import Token
+# >>> from django.contrib.auth.models import User
+# >>> user = User.objects.get(username="joshua")
+# >>> token = Token.objects.create(user=user)

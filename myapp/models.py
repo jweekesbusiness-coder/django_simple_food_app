@@ -18,11 +18,11 @@ class Item(models.Model):
     item_name = models.CharField(max_length=200,db_index=True) #Indexing a field
     item_des = models.CharField()
     item_price = models.DecimalField(max_digits=6,decimal_places=2,db_index=True) #Indexing a field
-    item_image = models.URLField(max_length=500,default='https://www.ikea.com/us/en/images/products/upplaga-plate-white__0714553_pe730123_s5.jpg?f=s')
+    item_image = models.ImageField(upload_to="item_images/",blank=True,null=True,unique=False)
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False) #Used for creating a soft delete flag
-    deleted_at = models.DateTimeField(null=True,blank=False)
+    deleted_at = models.DateTimeField(null=True,blank=True) #Used to store the time of deletion for soft deleted items
     #Connecting our custom manager to our Item model
     objects = ItemManager()
     all_objects = models.Manager()
@@ -49,3 +49,20 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+    
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item,related_name='orders')
+    total_price = models.DecimalField(max_digits=8,decimal_places=2,default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    # def save(self,*args, **kwargs):
+    #     self.total_price = 0
+    #     for item in self.items.all():
+    #         self.total_price += item.item_price
+    #     self.save()
+
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username}"   
